@@ -16,34 +16,15 @@ import retrofit2.Call
 import retrofit2.Response
 
 class MainActivity : AppCompatActivity() {
-    lateinit var rvMain : RecyclerView
-    lateinit var myAdapter: MyAdapter
-     val BASE_URL = "https://vpic.nhtsa.dot.gov/"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        rvMain= findViewById(R.id.recyclerView)
-        rvMain.layoutManager = LinearLayoutManager(this)
-        getAllData()
-    }
-
-    private fun getAllData() {
-        var retrofit = Retrofit.Builder()
-            .baseUrl((BASE_URL))
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(ApiInterface::class.java)
-
-        GlobalScope.launch{
-            var retroData = retrofit.getData()
-            val data =  retroData.body()?.Results
-            println("hello world")
-  print(data?.first()?.Mfr_Name)
-
+        val carApi = RetrofitHelper.getInstance().create(ApiInterface::class.java)
+        GlobalScope.launch {
+            val result = carApi.getData()
+            if (result != null)
+            // Checking the results
+                Log.d("ayush: ", result.body().toString())
         }
-
-
-
     }
 }
